@@ -76,7 +76,7 @@
               @input="validateInput"
               :readonly="isMobile()"
             />
-            <button type="submit" class="btn btn-primary ml-2"><PaperPlaneIcon /></button>
+            <button :disabled="guess.length < 4" type="submit" class="btn btn-primary ml-2"><PaperPlaneIcon /></button>
           </div>
         </form>
         <div v-if="!message.show" class="num-pad">
