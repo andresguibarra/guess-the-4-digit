@@ -139,9 +139,15 @@ import RotateLeftIcon from './components/icons/RotateLeftIcon.vue'
 import LanguageSelector from './components/LanguageSelector.vue'
 import { useTranslation } from './composables/useTranslation'
 
+interface Attempt {
+  guess: string
+  cows: number
+  bulls: number
+}
+
 const { t } = useTranslation()
 
-const attempts: Ref<any[]> = ref([])
+const attempts: Ref<Attempt[]> = ref([])
 const secretNumber = ref('')
 const guess = ref('')
 const message = ref({
