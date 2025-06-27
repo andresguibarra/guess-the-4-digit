@@ -1,0 +1,47 @@
+<template>
+  <div class="language-selector">
+    <select 
+      :value="currentLanguage" 
+      @change="handleLanguageChange"
+      class="form-select form-select-sm"
+      :aria-label="t('language')"
+    >
+      <option value="en">🇺🇸 English</option>
+      <option value="es">🇪🇸 Español</option>
+    </select>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useTranslation, type Language } from '../composables/useTranslation'
+
+const { currentLanguage, setLanguage, t } = useTranslation()
+
+const handleLanguageChange = (event: Event) => {
+  const target = event.target as HTMLSelectElement
+  setLanguage(target.value as Language)
+}
+</script>
+
+<style scoped>
+.language-selector {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+}
+
+.form-select-sm {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  min-width: auto;
+}
+
+@media (max-width: 768px) {
+  .language-selector {
+    position: static;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+}
+</style>

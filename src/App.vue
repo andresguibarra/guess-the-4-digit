@@ -1,27 +1,26 @@
 <template>
   <div class="container-sm">
+    <LanguageSelector />
     <div class="row justify-content-md-center">
       <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
-        <h1 class="text-center my-2">Guess the 4-digit number</h1>
+        <h1 class="text-center my-2">{{ t('title') }}</h1>
         <p class="text-center d-none d-sm-block">
-          Try to guess the secret 4-digit number with unique digits from 1 to 9.
-          <br />You have 10 attempts.
+          {{ t('description') }}
+          <br />{{ t('attemptsText') }}
         </p>
         <table class="table table-responsive table-striped table-hover">
           <thead>
             <tr>
-              <th scope="col" class="guess-column">Guess</th>
+              <th scope="col" class="guess-column">{{ t('guess') }}</th>
               <th scope="col" class="goods-column">
                 <Popper hover arrow>
                   <span class="d-flex align-items-center">
-                    <span class="me-1">Goods</span>
+                    <span class="me-1">{{ t('goods') }}</span>
                     <CircleInfo />
                   </span>
                   <template #content>
                     <div style="white-space: nowrap">
-                      Number of digits in the guess that <br />
-                      are in the secret number but <br />
-                      in a different position.
+                      {{ t('goodsTooltip') }}
                     </div>
                   </template>
                 </Popper>
@@ -29,13 +28,12 @@
               <th scope="col" class="corrects-column">
                 <Popper hover arrow>
                   <span class="d-flex align-items-center">
-                    <span class="me-1">Corrects</span>
+                    <span class="me-1">{{ t('corrects') }}</span>
                     <CircleInfo />
                   </span>
                   <template #content>
                     <div style="white-space: nowrap">
-                      Number of digits in the guess that <br />
-                      are in the correct position.
+                      {{ t('correctsTooltip') }}
                     </div>
                   </template>
                 </Popper>
@@ -69,7 +67,7 @@
               type="text"
               pattern="^(?!.*(.).*\1)[1-9]{1,4}$"
               maxlength="4"
-              placeholder="Enter your guess"
+              :placeholder="t('inputPlaceholder')"
               required
               class="form-control"
               :disabled="attempts.length === 10 || message.show"
@@ -118,13 +116,13 @@
         >
           {{ message.text }}
           <button @click="resetGame" class="btn btn-sm btn-outline-secondary ml-2">
-            Play again
+            {{ t('playAgain') }}
           </button>
         </div>
         <div v-else class="text-center my-4">
           <button @click="resetGame" class="btn btn-sm btn-outline-secondary ml-2">
             <RotateLeftIcon class="me-1" />
-            Reset
+            {{ t('reset') }}
           </button>
         </div>
       </div>
@@ -138,6 +136,11 @@ import Popper from 'vue3-popper'
 import CircleInfo from './components/icons/CircleInfo.vue'
 import PaperPlaneIcon from './components/icons/PaperPlaneIcon.vue'
 import RotateLeftIcon from './components/icons/RotateLeftIcon.vue'
+import LanguageSelector from './components/LanguageSelector.vue'
+import { useTranslation } from './composables/useTranslation'
+
+const { t } = useTranslation()
+
 const attempts: Ref<any[]> = ref([])
 const secretNumber = ref('')
 const guess = ref('')
@@ -179,11 +182,9 @@ const validateInput = (e: Event) => {
 
   if (currentValue !== validValue) {
     inputElement.value = validValue
-    inputElement.setCustomValidity(
-      'Please enter a 4-digit number with digits from 1 to 9 (inclusive)'
-    )
+    inputElement.setCustomValidity(t('invalidDigits'))
   } else if (hasDuplicates(currentValue)) {
-    inputElement.setCustomValidity('No duplicate digits allowed')
+    inputElement.setCustomValidity(t('duplicateDigits'))
   } else {
     inputElement.setCustomValidity('')
   }
@@ -206,13 +207,13 @@ const submitGuess = () => {
     if (bulls === 4) {
       message.value = {
         show: true,
-        text: `You won! The secret number is ${secretNumber.value}.`,
+        text: t('winMessage', secretNumber.value),
         variant: 'success'
       }
     } else if (attempts.value.length === 10) {
       message.value = {
         show: true,
-        text: `Game over. The secret number was ${secretNumber.value}.`,
+        text: t('loseMessage', secretNumber.value),
         variant: 'danger'
       }
     }
@@ -257,6 +258,10 @@ secretNumber.value = generateSecretNumber()
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+.container-sm {
+  position: relative;
+}
 
 * {
   font-family: 'Roboto', sans-serif;
