@@ -58,7 +58,7 @@ const translations: Translations = {
     es: 'Jugar de nuevo'
   },
   reset: {
-    en: 'Reiniciar',
+    en: 'Reset',
     es: 'Reiniciar'
   },
   
