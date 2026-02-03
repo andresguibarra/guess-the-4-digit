@@ -849,17 +849,11 @@ table.table > tbody > tr:hover > * {
   /* Mobile viewport fix - max height 100dvh, content fills available space */
   .container-sm {
     padding: 0.5rem;
-    height: 100dvh;
     height: 100vh; /* Fallback for browsers that don't support dvh */
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-  }
-
-  @supports (height: 100dvh) {
-    .container-sm {
-      height: 100dvh;
-    }
   }
 
   .row {
