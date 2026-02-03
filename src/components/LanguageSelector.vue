@@ -32,25 +32,32 @@ const handleLanguageChange = (event: Event) => {
 }
 
 .form-select-sm {
-  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
   padding: 0.4rem 0.75rem;
   min-width: auto;
-  border: 2px solid #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  background: white;
-  color: #475569;
+  background: rgba(21, 27, 35, 0.9);
+  color: rgba(255, 255, 255, 0.8);
   font-weight: 500;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
+}
+
+.form-select-sm option {
+  background: #151b23;
+  color: #fff;
 }
 
 .form-select-sm:hover {
-  border-color: #cbd5e1;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(21, 27, 35, 1);
 }
 
 .form-select-sm:focus {
-  border-color: var(--game-primary, #3b82f6);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  border-color: var(--game-primary, #38bdf8);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
   outline: none;
 }
 

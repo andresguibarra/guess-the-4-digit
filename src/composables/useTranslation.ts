@@ -109,6 +109,10 @@ const translations: Translations = {
     en: 'No duplicate digits allowed',
     es: 'No se permiten dígitos duplicados'
   },
+  duplicateDigitError: {
+    en: 'Digit {0} is already used',
+    es: 'El dígito {0} ya fue usado'
+  },
   
   // Language selector
   language: {
@@ -140,9 +144,14 @@ export const useTranslation = () => {
     
     let text = translation[currentLanguage.value]
     
-    // Handle dynamic values (like secret number in messages)
+    // Handle dynamic values with {0} placeholder
     if (value !== undefined) {
-      text = `${text} ${value}.`
+      if (text.includes('{0}')) {
+        text = text.replace('{0}', String(value))
+      } else {
+        // Fallback for messages like win/lose that append the value
+        text = `${text} ${value}.`
+      }
     }
     
     return text

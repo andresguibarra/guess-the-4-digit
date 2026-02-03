@@ -93,12 +93,18 @@
                   }}</span>
                 </td>
                 <td>
-                <span v-if="attempts[index]?.cows !== undefined" class="fade-in">{{
+                <span 
+                  v-if="attempts[index]?.cows !== undefined" 
+                  :class="['fade-in', { 'value-zero': attempts[index]?.cows === 0 }]"
+                >{{
                   attempts[index]?.cows
                 }}</span>
               </td>
               <td>
-                <span v-if="attempts[index]?.bulls !== undefined" class="fade-in">{{
+                <span 
+                  v-if="attempts[index]?.bulls !== undefined" 
+                  :class="['fade-in', { 'value-zero': attempts[index]?.bulls === 0 }]"
+                >{{
                   attempts[index]?.bulls
                 }}</span>
               </td>
@@ -106,20 +112,36 @@
           </tbody>
         </table>
         <form v-if="!message.show" @submit.prevent="submitGuess" class="form-inline d-flex">
-          <div class="input-group">
+          <div class="terminal-input-wrapper">
+            <div class="terminal-input-container" @click="focusInput">
+              <div class="terminal-display">
+                <span v-for="i in 4" :key="i" class="digit-slot">
+                  <span v-if="guess[i-1]" class="digit-value">{{ guess[i-1] }}</span>
+                  <span v-else-if="i === guess.length + 1" class="cursor">_</span>
+                  <span v-else class="digit-placeholder">_</span>
+                </span>
+              </div>
             <input
+              ref="hiddenInput"
               v-model="guess"
               type="text"
               pattern="^(?!.*(.).*\1)[1-9]{1,4}$"
               maxlength="4"
-              :placeholder="t('inputPlaceholder')"
               required
-              class="form-control"
+              class="hidden-input"
               :disabled="attempts.length === 10 || message.show"
               @input="validateInput"
               :readonly="isMobile()"
             />
-            <button :disabled="guess.length < 4" type="submit" class="btn btn-primary ml-2"><PaperPlaneIcon /></button>
+              <button :disabled="guess.length < 4" type="submit" class="btn-submit">
+                <PaperPlaneIcon />
+              </button>
+            </div>
+            <transition name="tooltip-fade">
+              <div v-if="errorTooltip.show" class="error-tooltip">
+                {{ errorTooltip.text }}
+              </div>
+            </transition>
           </div>
         </form>
         <div v-if="!message.show" class="num-pad">
@@ -177,7 +199,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, type Ref } from 'vue'
+import { ref, onMounted, onUnmounted, type Ref } from 'vue'
 import Popper from 'vue3-popper'
 import CircleInfo from './components/icons/CircleInfo.vue'
 import PaperPlaneIcon from './components/icons/PaperPlaneIcon.vue'
@@ -196,20 +218,41 @@ const { t } = useTranslation()
 const attempts: Ref<Attempt[]> = ref([])
 const secretNumber = ref('')
 const guess = ref('')
+const hiddenInput = ref<HTMLInputElement | null>(null)
+const errorTooltip = ref({
+  show: false,
+  text: ''
+})
+let errorTimeout: ReturnType<typeof setTimeout> | null = null
 const message = ref({
   show: false,
   text: '',
   variant: ''
 })
 
+const showErrorTooltip = (text: string) => {
+  if (errorTimeout) clearTimeout(errorTimeout)
+  errorTooltip.value = { show: true, text }
+  errorTimeout = setTimeout(() => {
+    errorTooltip.value.show = false
+  }, 1500)
+}
+
+const focusInput = () => {
+  hiddenInput.value?.focus()
+}
+
 const isMobile = () => {
   return window.innerWidth <= 768
 }
 
 const appendToInput = (n: number) => {
-  if (guess.value.length < 4 && !guess.value.includes(n.toString())) {
-    guess.value += n.toString()
+  if (guess.value.length >= 4) return
+  if (guess.value.includes(n.toString())) {
+    showErrorTooltip(t('duplicateDigitError', n.toString()))
+    return
   }
+  guess.value += n.toString()
 }
 
 const removeFromInput = () => {
@@ -230,12 +273,15 @@ const generateSecretNumber = () => {
 const validateInput = (e: Event) => {
   const inputElement = e.target as HTMLInputElement
   const currentValue = inputElement.value
+  // Solo permitir números del 1-9
   const validValue = currentValue.replace(/[^1-9]/g, '')
 
+  // Actualizar el v-model con el valor filtrado
+  guess.value = validValue
+
   if (currentValue !== validValue) {
-    inputElement.value = validValue
     inputElement.setCustomValidity(t('invalidDigits'))
-  } else if (hasDuplicates(currentValue)) {
+  } else if (hasDuplicates(validValue)) {
     inputElement.setCustomValidity(t('duplicateDigits'))
   } else {
     inputElement.setCustomValidity('')
@@ -305,34 +351,107 @@ const resetGame = () => {
   scrollToTop()
 }
 
+// Capturar teclas globalmente
+const handleGlobalKeydown = (e: KeyboardEvent) => {
+  // Si el juego terminó, no hacer nada
+  if (message.value.show || attempts.value.length >= 10) return
+  
+  // Si es un número del 1-9
+  if (/^[1-9]$/.test(e.key)) {
+    e.preventDefault()
+    if (guess.value.length >= 4) return
+    if (guess.value.includes(e.key)) {
+      showErrorTooltip(t('duplicateDigitError', e.key))
+      return
+    }
+    guess.value += e.key
+  }
+  
+  // Backspace para borrar
+  if (e.key === 'Backspace') {
+    e.preventDefault()
+    guess.value = guess.value.slice(0, -1)
+  }
+  
+  // Enter para enviar
+  if (e.key === 'Enter' && guess.value.length === 4) {
+    e.preventDefault()
+    submitGuess()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleGlobalKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown)
+})
+
 secretNumber.value = generateSecretNumber()
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
 
 .container-sm {
   position: relative;
   padding: 1rem;
+  min-height: 100vh;
+}
+
+/* Subtle grid background */
+.container-sm::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(56, 189, 248, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: -1;
 }
 
 * {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
 }
 
-/* Clean card design */
+/* Card design */
 .game-card {
-  background: white;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  background: rgba(21, 27, 35, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
   margin-top: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.5), transparent);
 }
 
 h1 {
-  font-weight: 700;
-  color: #1e293b;
-  font-size: 1.5rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  color: #fff;
+  font-size: 1.8rem;
+  letter-spacing: 0.02em;
 }
 
 @media (min-width: 1200px) {
@@ -342,43 +461,73 @@ h1 {
 }
 
 p {
+  font-family: 'Inter', sans-serif;
   font-weight: 400;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
 }
 
-/* Table styling */
-table {
+/* Table styling - force dark theme */
+table.table {
   margin-bottom: 1.5rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent !important;
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.06);
+  --bs-table-color: rgba(255, 255, 255, 0.9);
 }
 
-table th {
-  font-weight: 600;
-  font-size: 0.8rem;
-  color: #64748b;
+table.table th {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5) !important;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
 }
 
-.table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: #f8fafc;
+table.table tbody {
+  background: transparent !important;
 }
 
-.table-hover > tbody > tr:hover {
-  background-color: #f1f5f9;
+table.table tbody tr {
+  background: transparent !important;
+}
+
+table.table > tbody > tr:nth-of-type(odd) > * {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+table.table > tbody > tr:nth-of-type(even) > * {
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+table.table > tbody > tr:hover > * {
+  background-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 .table-row td {
   vertical-align: middle;
-  padding: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: none !important;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
+/* Digit display for guesses */
 .table-row td:first-child {
-  font-weight: 600;
-  font-size: 1.1rem;
-  letter-spacing: 0.15rem;
-  color: #1e293b;
-  font-family: 'Monaco', 'Consolas', monospace;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 1.3rem;
+  letter-spacing: 0.4rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .fade-in {
@@ -401,28 +550,44 @@ table th {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 26px;
-  height: 26px;
-  padding: 0 8px;
-  background: #fef3c7;
-  border-radius: 6px;
-  color: #b45309;
-  font-weight: 600;
-  font-size: 0.85rem;
+  min-width: 40px;
+  height: 32px;
+  padding: 0 12px;
+  background: var(--game-warning-muted);
+  border: 1px solid rgba(251, 146, 60, 0.3);
+  border-radius: 8px;
+  color: #fb923c;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+.table-row > td:nth-child(2) span.value-zero {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.25);
 }
 
 .table-row > td:nth-child(3) span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 26px;
-  height: 26px;
-  padding: 0 8px;
-  background: #dcfce7;
-  border-radius: 6px;
-  color: #15803d;
-  font-weight: 600;
-  font-size: 0.85rem;
+  min-width: 40px;
+  height: 32px;
+  padding: 0 12px;
+  background: var(--game-success-muted);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 8px;
+  color: #4ade80;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+.table-row > td:nth-child(3) span.value-zero {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.25);
 }
 
 .guess-column {
@@ -437,41 +602,182 @@ table th {
 
 .table-row {
   font-size: 0.875rem;
-  height: 44px;
+  height: 48px;
 }
 
 /* Input styling */
+.input-group {
+  position: relative;
+}
+
+/* Terminal Input Styling */
+.terminal-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.terminal-input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  border: 2px solid #333;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.terminal-display {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  gap: 0.5rem;
+  background: transparent;
+  cursor: text;
+}
+
+.hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.digit-slot {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 2rem;
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.digit-value {
+  color: #fff;
+}
+
+.digit-placeholder {
+  color: rgba(255, 255, 255, 0.15);
+}
+
+.cursor {
+  color: #fff;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Error tooltip */
+.error-tooltip {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(248, 113, 113, 0.95);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.error-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid rgba(248, 113, 113, 0.95);
+}
+
+.tooltip-fade-enter-active,
+.tooltip-fade-leave-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.tooltip-fade-enter-from,
+.tooltip-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(5px);
+}
+
+.btn-submit {
+  background: transparent;
+  border: none;
+  border-left: 2px solid #333;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-submit svg {
+  color: rgba(255, 255, 255, 0.5);
+  width: 24px;
+  height: 24px;
+  transition: color 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) svg {
+  color: #fff;
+}
+
+.btn-submit:disabled {
+  cursor: not-allowed;
+}
+
+.btn-submit:disabled svg {
+  color: rgba(255, 255, 255, 0.2);
+}
+
 .form-control {
-  border: 2px solid #e2e8f0;
-  border-radius: 10px 0 0 10px;
-  padding: 0.75rem 1rem;
+  background: rgba(15, 20, 25, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 12px 0 0 12px;
+  padding: 0.875rem 1rem;
   font-size: 1.1rem;
-  letter-spacing: 0.2rem;
+  letter-spacing: 0.15rem;
   font-weight: 600;
-  font-family: 'Monaco', 'Consolas', monospace;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: 'Roboto', monospace;
+  color: #fff;
+  transition: all 0.2s;
 }
 
 .form-control:focus {
+  background: rgba(15, 20, 25, 1);
   border-color: var(--game-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
   outline: none;
 }
 
 .form-control::placeholder {
   letter-spacing: 0;
   font-weight: 400;
-  font-family: 'Inter', sans-serif;
-  color: #94a3b8;
+  font-family: 'Roboto', sans-serif;
+  color: rgba(255, 255, 255, 0.3);
 }
 
 /* Submit button */
 .btn-primary {
   background: var(--game-primary);
   border: none;
-  border-radius: 0 10px 10px 0;
-  padding: 0.75rem 1.25rem;
-  transition: background 0.2s, transform 0.1s;
+  border-radius: 0 12px 12px 0;
+  padding: 0.875rem 1.25rem;
+  transition: all 0.2s;
+}
+
+.btn-primary svg {
+  color: #0f1419;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -483,34 +789,40 @@ table th {
 }
 
 .btn-primary:disabled {
-  background: #cbd5e1;
+  background: rgba(56, 189, 248, 0.3);
+  opacity: 0.6;
 }
 
 /* Numpad */
 .num-pad {
   display: none;
-  margin-top: 1rem;
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .num-pad .btn {
   width: 52px;
   height: 52px;
   border-radius: 12px;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
   transition: all 0.15s;
 }
 
 .num-pad .btn-outline-primary {
-  border: 2px solid #e2e8f0;
-  background: white;
-  color: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
 }
 
 .num-pad .btn-outline-primary:hover:not(:disabled) {
   background: var(--game-primary);
   border-color: var(--game-primary);
-  color: white;
+  color: #0f1419;
 }
 
 .num-pad .btn-outline-primary:active:not(:disabled) {
@@ -518,15 +830,15 @@ table th {
 }
 
 .num-pad .btn-outline-danger {
-  border: 2px solid #fecaca;
-  background: #fef2f2;
-  color: #dc2626;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.1);
+  color: #f87171;
 }
 
 .num-pad .btn-outline-danger:hover:not(:disabled) {
-  background: #dc2626;
-  border-color: #dc2626;
-  color: white;
+  background: #f87171;
+  border-color: #f87171;
+  color: #fff;
 }
 
 @media (max-width: 768px) {
@@ -537,53 +849,69 @@ table th {
 
 /* Alert messages */
 .alert {
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
-  border: none;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  border: 2px solid #333;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  gap: 1rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 1.1rem;
+  background: transparent;
+  text-align: center;
 }
 
 .alert-success {
-  background: #dcfce7;
-  color: #15803d;
+  border-color: rgba(74, 222, 128, 0.5);
+  color: #4ade80;
 }
 
 .alert-danger {
-  background: #fef2f2;
-  color: #dc2626;
+  border-color: rgba(248, 113, 113, 0.5);
+  color: #f87171;
 }
 
-/* Secondary button */
+.alert .btn-outline-secondary {
+  margin-top: 0.5rem;
+}
+
+/* Secondary button - Reset */
 .btn-outline-secondary {
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
-  color: #64748b;
-  background: white;
-  padding: 0.4rem 0.875rem;
-  font-weight: 500;
-  font-size: 0.875rem;
+  border: 2px solid #333;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+  padding: 0.6rem 1.25rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 0.9rem;
   transition: all 0.2s;
 }
 
 .btn-outline-secondary:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
-  color: #1e293b;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.btn-outline-secondary svg {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Tooltip styling */
 .tooltip-content {
-  padding: 0.75rem;
+  padding: 0.875rem;
   max-width: 280px;
   font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .tooltip-title {
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
@@ -591,33 +919,34 @@ table th {
 }
 
 .tooltip-goods .tooltip-title {
-  color: #b45309;
+  color: #fb923c;
 }
 
 .tooltip-corrects .tooltip-title {
-  color: #15803d;
+  color: #4ade80;
 }
 
 .tooltip-description {
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.6);
   margin-bottom: 0.75rem;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .tooltip-example {
-  background: #f8fafc;
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   padding: 0.75rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .tooltip-example-label {
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
-  color: #475569;
+  color: rgba(255, 255, 255, 0.5);
   margin-bottom: 0.5rem;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
 }
 
 .tooltip-example-row {
@@ -628,8 +957,8 @@ table th {
 }
 
 .tooltip-label {
-  font-size: 0.75rem;
-  color: #64748b;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
   width: 55px;
   flex-shrink: 0;
 }
@@ -640,43 +969,31 @@ table th {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  border: 2px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.85rem;
-  color: #64748b;
-  font-family: 'Monaco', 'Consolas', monospace;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .digit-highlight-good {
-  background: #fef3c7;
-  border-color: #f59e0b;
-  color: #b45309;
-  animation: pulseGood 1.5s ease-in-out infinite;
+  background: var(--game-warning-muted);
+  border-color: rgba(251, 146, 60, 0.4);
+  color: #fb923c;
 }
 
 .digit-highlight-correct {
-  background: #dcfce7;
-  border-color: #22c55e;
-  color: #15803d;
-  animation: pulseCorrect 1.5s ease-in-out infinite;
-}
-
-@keyframes pulseGood {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-  50% { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1); }
-}
-
-@keyframes pulseCorrect {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-  50% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1); }
+  background: var(--game-success-muted);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #4ade80;
 }
 
 .tooltip-result {
   margin-top: 0.6rem;
   padding-top: 0.6rem;
-  border-top: 1px dashed #e2e8f0;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -687,37 +1004,47 @@ table th {
   align-items: center;
   justify-content: center;
   padding: 0.25rem 0.6rem;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 0.8rem;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
   width: fit-content;
 }
 
 .result-goods {
-  background: #fef3c7;
-  color: #b45309;
+  background: var(--game-warning-muted);
+  color: #fb923c;
 }
 
 .result-corrects {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--game-success-muted);
+  color: #4ade80;
 }
 
 .tooltip-hint {
-  font-size: 0.75rem;
-  color: #94a3b8;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
   font-style: italic;
   line-height: 1.3;
 }
 
 /* Popper arrow styling */
 :root {
-  --popper-theme-background-color: #1e293b;
-  --popper-theme-background-color-hover: #1e293b;
+  --popper-theme-background-color: rgba(21, 27, 35, 0.98);
+  --popper-theme-background-color-hover: rgba(21, 27, 35, 0.98);
   --popper-theme-text-color: white;
-  --popper-theme-border-width: 0;
+  --popper-theme-border-width: 1px;
+  --popper-theme-border-color: rgba(255, 255, 255, 0.1);
   --popper-theme-border-radius: 12px;
   --popper-theme-padding: 0;
-  --popper-theme-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  --popper-theme-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Info icon color */
+.goods-column svg,
+.corrects-column svg {
+  color: rgba(255, 255, 255, 0.4);
+  width: 14px;
+  height: 14px;
 }
 </style>
