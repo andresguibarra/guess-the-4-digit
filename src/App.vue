@@ -897,9 +897,10 @@ table.table > tbody > tr:hover > * {
     padding: 0.25rem 0.5rem;
   }
 
-  /* Table rows fill available space proportionally */
+  /* Table rows fill available space proportionally with consistent minimum height */
   .table-row {
     height: auto;
+    min-height: 40px;
   }
 
   .table-row td {
