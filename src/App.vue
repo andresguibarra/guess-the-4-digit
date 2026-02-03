@@ -846,13 +846,20 @@ table.table > tbody > tr:hover > * {
     display: block;
   }
 
-  /* Mobile viewport fix - fit everything within 100vh */
+  /* Mobile viewport fix - max height 100dvh, content fills available space */
   .container-sm {
     padding: 0.5rem;
-    height: 100vh;
+    height: 100dvh;
+    height: 100vh; /* Fallback for browsers that don't support dvh */
     display: flex;
     flex-direction: column;
     overflow: hidden;
+  }
+
+  @supports (height: 100dvh) {
+    .container-sm {
+      height: 100dvh;
+    }
   }
 
   .row {
@@ -884,25 +891,26 @@ table.table > tbody > tr:hover > * {
     margin-top: 0 !important;
   }
 
-  /* Hide the table header row details to save space */
+  /* Table expands to fill available space */
   table.table {
     margin-bottom: 0.5rem;
-    flex-shrink: 1;
+    flex: 1;
     min-height: 0;
   }
 
   table.table th {
     font-size: 0.65rem;
-    padding: 0.3rem 0.5rem;
+    padding: 0.25rem 0.5rem;
   }
 
+  /* Table rows fill available space proportionally */
   .table-row {
     height: auto;
   }
 
   .table-row td {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
   }
 
   .table-row td:first-child {
@@ -915,17 +923,18 @@ table.table > tbody > tr:hover > * {
     min-width: 28px;
     height: 24px;
     padding: 0 8px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
-  /* Terminal input - compact */
+  /* Terminal input */
   .terminal-input-wrapper {
     margin-bottom: 0.25rem;
+    flex-shrink: 0;
   }
 
   .terminal-display {
     padding: 0.5rem 1rem;
-    gap: 0.25rem;
+    gap: 0.3rem;
   }
 
   .digit-slot {
@@ -942,7 +951,7 @@ table.table > tbody > tr:hover > * {
     height: 20px;
   }
 
-  /* Numpad - compact for mobile */
+  /* Numpad - fixed size, doesn't shrink */
   .num-pad {
     margin-top: 0.5rem;
     padding: 0.5rem;
@@ -956,16 +965,17 @@ table.table > tbody > tr:hover > * {
   }
 
   .num-pad .btn {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 8px;
     font-size: 1rem;
   }
 
-  /* Reset button - compact */
+  /* Reset button */
   .reset-container {
     margin-top: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 0.25rem !important;
+    flex-shrink: 0;
   }
 
   .btn-outline-secondary {
@@ -973,12 +983,13 @@ table.table > tbody > tr:hover > * {
     font-size: 0.8rem;
   }
 
-  /* Alert message - compact */
+  /* Alert message */
   .alert {
     padding: 0.75rem 1rem;
     margin-top: 0.5rem !important;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     gap: 0.5rem;
+    flex-shrink: 0;
   }
 }
 
