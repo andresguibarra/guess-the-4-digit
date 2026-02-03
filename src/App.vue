@@ -20,8 +20,30 @@
                       <CircleInfo />
                     </span>
                     <template #content>
-                      <div style="white-space: nowrap">
-                        {{ t('goodsTooltip') }}
+                      <div class="tooltip-content tooltip-goods">
+                        <div class="tooltip-title">{{ t('goodsTitle') }}</div>
+                        <div class="tooltip-description">{{ t('goodsTooltip') }}</div>
+                        <div class="tooltip-example">
+                          <div class="tooltip-example-label">{{ t('example') }}:</div>
+                          <div class="tooltip-example-row">
+                            <span class="tooltip-label">{{ t('secretLabel') }}:</span>
+                            <span class="digit-box">5</span>
+                            <span class="digit-box">2</span>
+                            <span class="digit-box digit-highlight-good">7</span>
+                            <span class="digit-box digit-highlight-good">4</span>
+                          </div>
+                          <div class="tooltip-example-row">
+                            <span class="tooltip-label">{{ t('guessLabel') }}:</span>
+                            <span class="digit-box digit-highlight-good">4</span>
+                            <span class="digit-box digit-highlight-good">7</span>
+                            <span class="digit-box">3</span>
+                            <span class="digit-box">1</span>
+                          </div>
+                          <div class="tooltip-result">
+                            <span class="result-badge result-goods">2 {{ t('goods') }}</span>
+                            <span class="tooltip-hint">{{ t('goodsHint') }}</span>
+                          </div>
+                        </div>
                       </div>
                     </template>
                   </Popper>
@@ -33,8 +55,30 @@
                       <CircleInfo />
                     </span>
                     <template #content>
-                      <div style="white-space: nowrap">
-                        {{ t('correctsTooltip') }}
+                      <div class="tooltip-content tooltip-corrects">
+                        <div class="tooltip-title">{{ t('correctsTitle') }}</div>
+                        <div class="tooltip-description">{{ t('correctsTooltip') }}</div>
+                        <div class="tooltip-example">
+                          <div class="tooltip-example-label">{{ t('example') }}:</div>
+                          <div class="tooltip-example-row">
+                            <span class="tooltip-label">{{ t('secretLabel') }}:</span>
+                            <span class="digit-box digit-highlight-correct">5</span>
+                            <span class="digit-box">2</span>
+                            <span class="digit-box digit-highlight-correct">7</span>
+                            <span class="digit-box">4</span>
+                          </div>
+                          <div class="tooltip-example-row">
+                            <span class="tooltip-label">{{ t('guessLabel') }}:</span>
+                            <span class="digit-box digit-highlight-correct">5</span>
+                            <span class="digit-box">9</span>
+                            <span class="digit-box digit-highlight-correct">7</span>
+                            <span class="digit-box">1</span>
+                          </div>
+                          <div class="tooltip-result">
+                            <span class="result-badge result-corrects">2 {{ t('corrects') }}</span>
+                            <span class="tooltip-hint">{{ t('correctsHint') }}</span>
+                          </div>
+                        </div>
                       </div>
                     </template>
                   </Popper>
@@ -528,5 +572,152 @@ table th {
   background: #f1f5f9;
   border-color: #cbd5e1;
   color: #1e293b;
+}
+
+/* Tooltip styling */
+.tooltip-content {
+  padding: 0.75rem;
+  max-width: 280px;
+  font-size: 0.85rem;
+}
+
+.tooltip-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tooltip-goods .tooltip-title {
+  color: #b45309;
+}
+
+.tooltip-corrects .tooltip-title {
+  color: #15803d;
+}
+
+.tooltip-description {
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.tooltip-example {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.tooltip-example-label {
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tooltip-example-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.tooltip-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  width: 55px;
+  flex-shrink: 0;
+}
+
+.digit-box {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #64748b;
+  font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.digit-highlight-good {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #b45309;
+  animation: pulseGood 1.5s ease-in-out infinite;
+}
+
+.digit-highlight-correct {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #15803d;
+  animation: pulseCorrect 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseGood {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1); }
+}
+
+@keyframes pulseCorrect {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  50% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1); }
+}
+
+.tooltip-result {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  width: fit-content;
+}
+
+.result-goods {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.result-corrects {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.tooltip-hint {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* Popper arrow styling */
+:root {
+  --popper-theme-background-color: #1e293b;
+  --popper-theme-background-color-hover: #1e293b;
+  --popper-theme-text-color: white;
+  --popper-theme-border-width: 0;
+  --popper-theme-border-radius: 12px;
+  --popper-theme-padding: 0;
+  --popper-theme-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 </style>

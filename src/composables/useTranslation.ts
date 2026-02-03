@@ -39,13 +39,41 @@ const translations: Translations = {
   },
   
   // Tooltips
+  goodsTitle: {
+    en: '🔶 Goods (Right digit, wrong spot)',
+    es: '🔶 Buenas (Dígito correcto, lugar equivocado)'
+  },
   goodsTooltip: {
-    en: 'Number of digits in the guess that are in the secret number but in a different position.',
-    es: 'Número de dígitos en el intento que están en el número secreto pero en una posición diferente.'
+    en: 'Digits that ARE in the secret number but NOT in the right position.',
+    es: 'Dígitos que SÍ están en el número secreto pero NO en la posición correcta.'
+  },
+  goodsHint: {
+    en: '4 and 7 exist but swapped places!',
+    es: '¡4 y 7 existen pero están intercambiados!'
+  },
+  correctsTitle: {
+    en: '✅ Corrects (Perfect match!)',
+    es: '✅ Correctas (¡Coincidencia perfecta!)'
   },
   correctsTooltip: {
-    en: 'Number of digits in the guess that are in the correct position.',
-    es: 'Número de dígitos en el intento que están en la posición correcta.'
+    en: 'Digits that ARE in the secret number AND in the exact same position.',
+    es: 'Dígitos que SÍ están en el número secreto Y en la misma posición exacta.'
+  },
+  correctsHint: {
+    en: '5 and 7 are in the exact right spot!',
+    es: '¡5 y 7 están en el lugar exacto!'
+  },
+  example: {
+    en: 'Example',
+    es: 'Ejemplo'
+  },
+  secretLabel: {
+    en: 'Secret',
+    es: 'Secreto'
+  },
+  guessLabel: {
+    en: 'Guess',
+    es: 'Intento'
   },
   
   // Input and buttons
