@@ -357,13 +357,16 @@ h1 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 1.75rem !important;
   text-shadow: none;
 }
 
+.game-card h1.text-center {
+  font-size: 1.75rem;
+}
+
 @media (min-width: 1200px) {
-  h1 {
-    font-size: 2rem !important;
+  .game-card h1.text-center {
+    font-size: 2rem;
   }
 }
 
@@ -670,7 +673,7 @@ table th {
 .emoji-decoration {
   position: absolute;
   font-size: 2rem;
-  animation: float 3s ease-in-out infinite;
+  animation: emojiFloat 3s ease-in-out infinite;
   opacity: 0.6;
 }
 
@@ -698,7 +701,7 @@ table th {
   animation-delay: 1.5s;
 }
 
-@keyframes float {
+@keyframes emojiFloat {
   0%, 100% { transform: translateY(0) rotate(-5deg); }
   50% { transform: translateY(-10px) rotate(5deg); }
 }
