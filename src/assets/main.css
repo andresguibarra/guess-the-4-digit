@@ -5,6 +5,10 @@
   max-width: 1280px;
   margin: 0 auto;
   font-weight: normal;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 1rem;
 }
 
 a,
@@ -24,5 +28,4 @@ a,
   body {
     display: flex;
   }
-
 }

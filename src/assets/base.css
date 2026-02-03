@@ -1,4 +1,4 @@
-/* color palette from <https://github.com/vuejs/theme> */
+/* Modern color palette */
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -9,6 +9,18 @@
   --vt-c-black-mute: #282828;
 
   --vt-c-indigo: #2c3e50;
+
+  /* Fun gradient colors */
+  --gradient-start: #667eea;
+  --gradient-middle: #764ba2;
+  --gradient-end: #f093fb;
+  
+  /* Accent colors */
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --accent-success: #10b981;
+  --accent-danger: #ef4444;
+  --accent-warning: #f59e0b;
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
@@ -36,20 +48,6 @@
   --section-gap: 160px;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
-
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
-
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
-} */
-
 *,
 *::before,
 *::after {
@@ -61,10 +59,11 @@
 body {
   min-height: 100vh;
   color: var(--color-text);
-  background: var(--color-background);
-  transition: color 0.5s, background-color 0.5s;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+  background-attachment: fixed;
+  transition: color 0.5s;
   line-height: 1.6;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+  font-family: 'Poppins', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;
@@ -72,14 +71,40 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Animated background particles */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 30%);
+  pointer-events: none;
+  z-index: 0;
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
 /*Popper styles*/
 :root {
-  --popper-theme-background-color: #333333;
-  --popper-theme-background-color-hover: #333333;
+  --popper-theme-background-color: rgba(30, 30, 60, 0.95);
+  --popper-theme-background-color-hover: rgba(30, 30, 60, 0.95);
   --popper-theme-text-color: #ffffff;
   --popper-theme-border-width: 0px;
   --popper-theme-border-style: solid;
-  --popper-theme-border-radius: 6px;
+  --popper-theme-border-radius: 12px;
   --popper-theme-padding: 32px;
-  --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
+  --popper-theme-box-shadow: 0 10px 40px -6px rgba(0, 0, 0, 0.3);
 }
