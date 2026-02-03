@@ -76,20 +76,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Mobile viewport fix - ensure body respects dynamic viewport height */
+/* Mobile viewport fix - ensure body respects 100vh */
 @media (max-width: 768px) {
   html, body {
-    height: 100vh;
-    height: 100dvh; /* Dynamic viewport height for mobile browsers */
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
+    height: 100%;
+    overflow-y: auto;
   }
 
   #app {
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
+    height: 100%;
+    overflow-y: auto;
   }
 }
 
