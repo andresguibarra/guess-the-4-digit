@@ -56,6 +56,10 @@
   position: relative;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   min-height: 100vh;
   color: var(--color-text);
@@ -70,6 +74,19 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile viewport fix - ensure body respects 100vh */
+@media (max-width: 768px) {
+  html, body {
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  #app {
+    height: 100%;
+    overflow-y: auto;
+  }
 }
 
 /*Popper styles*/
