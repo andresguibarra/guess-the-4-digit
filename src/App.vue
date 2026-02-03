@@ -186,7 +186,7 @@
             {{ t('playAgain') }}
           </button>
         </div>
-        <div v-else class="text-center my-3">
+        <div v-else class="reset-container text-center my-3">
           <button @click="resetGame" class="btn btn-sm btn-outline-secondary">
             <RotateLeftIcon class="me-1" />
             {{ t('reset') }}
@@ -844,6 +844,141 @@ table.table > tbody > tr:hover > * {
 @media (max-width: 768px) {
   .num-pad {
     display: block;
+  }
+
+  /* Mobile viewport fix - fit everything within 100vh */
+  .container-sm {
+    padding: 0.5rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .row {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .game-card {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+    margin-bottom: 0.25rem !important;
+    margin-top: 0 !important;
+  }
+
+  /* Hide the table header row details to save space */
+  table.table {
+    margin-bottom: 0.5rem;
+    flex-shrink: 1;
+    min-height: 0;
+  }
+
+  table.table th {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .table-row {
+    height: auto;
+  }
+
+  .table-row td {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .table-row td:first-child {
+    font-size: 1rem;
+    letter-spacing: 0.25rem;
+  }
+
+  .table-row > td:nth-child(2) span,
+  .table-row > td:nth-child(3) span {
+    min-width: 28px;
+    height: 24px;
+    padding: 0 8px;
+    font-size: 0.85rem;
+  }
+
+  /* Terminal input - compact */
+  .terminal-input-wrapper {
+    margin-bottom: 0.25rem;
+  }
+
+  .terminal-display {
+    padding: 0.5rem 1rem;
+    gap: 0.25rem;
+  }
+
+  .digit-slot {
+    font-size: 1.5rem;
+    min-width: 1.25rem;
+  }
+
+  .btn-submit {
+    padding: 0.5rem 1rem;
+  }
+
+  .btn-submit svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Numpad - compact for mobile */
+  .num-pad {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .num-pad .d-flex {
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .num-pad .btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+
+  /* Reset button - compact */
+  .reset-container {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .btn-outline-secondary {
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  /* Alert message - compact */
+  .alert {
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem !important;
+    font-size: 0.95rem;
+    gap: 0.5rem;
   }
 }
 
