@@ -596,15 +596,15 @@ table.table > tbody > tr:hover > * {
 /* Placeholder elements for empty cells to maintain consistent row heights */
 .cell-placeholder {
   display: inline-block;
+  /* Matches the font-size of guess digits (1.3rem) */
   height: 1.3rem;
   visibility: hidden;
 }
 
 .badge-placeholder {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   min-width: 40px;
+  /* Matches the score badge height */
   height: 32px;
   visibility: hidden;
 }
