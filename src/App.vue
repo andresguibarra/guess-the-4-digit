@@ -867,12 +867,13 @@ table.table > tbody > tr:hover > * {
 
   /* Mobile viewport fix - max height 100dvh, content fills available space */
   .container-sm {
-    padding: 0.5rem;
+    padding: 0.1rem;
     height: 100vh; /* Fallback for browsers that don't support dvh */
     height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    box-sizing: border-box;
   }
 
   .row {
@@ -885,12 +886,13 @@ table.table > tbody > tr:hover > * {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    width: 100%;
   }
 
   .game-card {
-    margin-top: 0.5rem;
-    padding: 0.75rem;
-    border-radius: 12px;
+    margin-top: 0.1rem;
+    padding: 0.35rem;
+    border-radius: 10px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -899,21 +901,21 @@ table.table > tbody > tr:hover > * {
   }
 
   h1 {
-    font-size: 1.3rem;
-    margin-bottom: 0.25rem !important;
+    font-size: 1.1rem;
+    margin-bottom: 0.1rem !important;
     margin-top: 0 !important;
   }
 
   /* Table expands to fill available space */
   table.table {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.1rem;
     flex: 1;
     min-height: 0;
   }
 
   table.table th {
-    font-size: 0.65rem;
-    padding: 0.25rem 0.5rem;
+    font-size: 0.55rem;
+    padding: 0.08rem 0.2rem;
   }
 
   /* Table rows fill available space proportionally */
@@ -922,96 +924,96 @@ table.table > tbody > tr:hover > * {
   }
 
   .table-row td {
-    padding: 0.35rem 0.5rem;
-    font-size: 0.85rem;
+    padding: 0.1rem 0.2rem;
+    font-size: 0.75rem;
   }
 
   .table-row td:first-child {
-    font-size: 1rem;
-    letter-spacing: 0.25rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.15rem;
   }
 
   .table-row > td:nth-child(2) span,
   .table-row > td:nth-child(3) span {
-    min-width: 28px;
-    height: 24px;
-    padding: 0 8px;
-    font-size: 0.8rem;
+    min-width: 20px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 0.65rem;
   }
 
   /* Mobile placeholder heights */
   .cell-placeholder {
-    height: 1rem;
+    height: 0.85rem;
   }
 
   .badge-placeholder {
-    min-width: 28px;
-    height: 24px;
+    min-width: 20px;
+    height: 16px;
   }
 
   /* Terminal input */
   .terminal-input-wrapper {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.1rem;
     flex-shrink: 0;
   }
 
   .terminal-display {
-    padding: 0.5rem 1rem;
-    gap: 0.3rem;
+    padding: 0.2rem 0.4rem;
+    gap: 0.15rem;
   }
 
   .digit-slot {
-    font-size: 1.5rem;
-    min-width: 1.25rem;
+    font-size: 1rem;
+    min-width: 0.8rem;
   }
 
   .btn-submit {
-    padding: 0.5rem 1rem;
+    padding: 0.2rem 0.4rem;
   }
 
   .btn-submit svg {
-    width: 20px;
-    height: 20px;
+    width: 14px;
+    height: 14px;
   }
 
   /* Numpad - fixed size, doesn't shrink */
   .num-pad {
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 10px;
+    margin-top: 0.1rem;
+    padding: 0.2rem;
+    border-radius: 6px;
     flex-shrink: 0;
   }
 
   .num-pad .d-flex {
-    margin-top: 0.25rem !important;
-    margin-bottom: 0.25rem !important;
+    margin-top: 0.08rem !important;
+    margin-bottom: 0.08rem !important;
   }
 
   .num-pad .btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    font-size: 1rem;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    font-size: 0.85rem;
   }
 
   /* Reset button */
   .reset-container {
-    margin-top: 0.5rem !important;
-    margin-bottom: 0.25rem !important;
+    margin-top: 0.1rem !important;
+    margin-bottom: 0.1rem !important;
     flex-shrink: 0;
   }
 
   .btn-outline-secondary {
-    padding: 0.4rem 1rem;
-    font-size: 0.8rem;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.65rem;
   }
 
   /* Alert message */
   .alert {
-    padding: 0.75rem 1rem;
-    margin-top: 0.5rem !important;
-    font-size: 0.9rem;
-    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    margin-top: 0.1rem !important;
+    font-size: 0.75rem;
+    gap: 0.2rem;
     flex-shrink: 0;
   }
 }
