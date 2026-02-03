@@ -91,6 +91,7 @@
                   <span v-if="attempts[index]?.guess" class="fade-in">{{
                     attempts[index]?.guess
                   }}</span>
+                  <span v-else class="cell-placeholder">&nbsp;</span>
                 </td>
                 <td>
                 <span 
@@ -99,6 +100,7 @@
                 >{{
                   attempts[index]?.cows
                 }}</span>
+                <span v-else class="badge-placeholder">&nbsp;</span>
               </td>
               <td>
                 <span 
@@ -107,6 +109,7 @@
                 >{{
                   attempts[index]?.bulls
                 }}</span>
+                <span v-else class="badge-placeholder">&nbsp;</span>
               </td>
             </tr>
           </tbody>
@@ -590,6 +593,22 @@ table.table > tbody > tr:hover > * {
   color: rgba(255, 255, 255, 0.25);
 }
 
+/* Placeholder elements for empty cells to maintain consistent row heights */
+.cell-placeholder {
+  display: inline-block;
+  /* Matches the font-size of guess digits (1.3rem) */
+  height: 1.3rem;
+  visibility: hidden;
+}
+
+.badge-placeholder {
+  display: inline-block;
+  min-width: 40px;
+  /* Matches the score badge height */
+  height: 32px;
+  visibility: hidden;
+}
+
 .guess-column {
   width: 50%;
 }
@@ -918,6 +937,16 @@ table.table > tbody > tr:hover > * {
     height: 24px;
     padding: 0 8px;
     font-size: 0.8rem;
+  }
+
+  /* Mobile placeholder heights */
+  .cell-placeholder {
+    height: 1rem;
+  }
+
+  .badge-placeholder {
+    min-width: 28px;
+    height: 24px;
   }
 
   /* Terminal input */
