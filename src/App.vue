@@ -1,7 +1,7 @@
 <template>
-  <div class="relative p-1 h-dvh flex flex-col overflow-hidden grid-background md:p-4 md:min-h-screen md:h-auto md:block md:overflow-visible">
+  <div class="relative p-1 h-dvh flex flex-col overflow-hidden grid-background md:p-4 md:min-h-screen md:h-auto md:flex md:items-center md:justify-center md:overflow-visible">
     <LanguageSelector />
-    <div class="flex-1 flex justify-center min-h-0 md:block md:flex-none">
+    <div class="flex-1 flex justify-center min-h-0 md:flex md:justify-center md:flex-none">
       <div class="w-full max-w-md flex flex-col min-h-0 md:block">
         <div class="game-card-glow bg-[rgba(21,27,35,0.8)] backdrop-blur-xl border border-white/[0.08] rounded-xl p-2 shadow-[0_4px_24px_rgba(0,0,0,0.3),inset_0_0_0_1px_rgba(255,255,255,0.03)] mt-1 relative overflow-hidden flex-1 flex flex-col min-h-0 md:rounded-[20px] md:p-7 md:mt-6 md:block md:overflow-visible">
           <h1 class="text-center mb-1 mt-0 font-[Roboto,sans-serif] font-light text-white text-xl tracking-wide md:text-3xl md:my-2">{{ t('title') }}</h1>
