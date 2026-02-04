@@ -165,6 +165,7 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba(255, 255, 255, 0.05);
     color: #fff;
+    cursor: pointer;
   }
 
   .numpad-btn:hover:not(:disabled) {
@@ -200,6 +201,7 @@
     border-radius: 0;
     color: rgba(255, 255, 255, 0.7);
     background: transparent;
+    cursor: pointer;
   }
 
   .btn-reset:hover {
