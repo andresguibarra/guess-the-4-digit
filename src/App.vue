@@ -500,6 +500,7 @@ table.table tbody {
 
 table.table tbody tr {
   background: transparent !important;
+  height: 2.2rem;
 }
 
 table.table > tbody > tr:nth-of-type(odd) > * {
@@ -518,7 +519,7 @@ table.table > tbody > tr:hover > * {
 
 .table-row td {
   vertical-align: middle;
-  padding: 0.6rem 0.75rem;
+  padding: 0 0.75rem !important;
   border: none !important;
   background: transparent;
   color: rgba(255, 255, 255, 0.9) !important;
@@ -867,7 +868,7 @@ table.table > tbody > tr:hover > * {
 
   /* Mobile viewport fix - max height 100dvh, content fills available space */
   .container-sm {
-    padding: 0.5rem;
+    padding: 0.25rem;
     height: 100vh; /* Fallback for browsers that don't support dvh */
     height: 100dvh;
     display: flex;
@@ -888,8 +889,8 @@ table.table > tbody > tr:hover > * {
   }
 
   .game-card {
-    margin-top: 0.5rem;
-    padding: 0.75rem;
+    margin-top: 0.25rem;
+    padding: 0.5rem;
     border-radius: 12px;
     flex: 1;
     display: flex;
@@ -906,7 +907,7 @@ table.table > tbody > tr:hover > * {
 
   /* Table expands to fill available space */
   table.table {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     flex: 1;
     min-height: 0;
   }
@@ -918,11 +919,11 @@ table.table > tbody > tr:hover > * {
 
   /* Table rows fill available space proportionally */
   .table-row {
-    height: auto;
+    height: 2rem;
   }
 
   .table-row td {
-    padding: 0.35rem 0.5rem;
+    padding: 0 0.5rem !important;
     font-size: 0.85rem;
   }
 
@@ -956,7 +957,7 @@ table.table > tbody > tr:hover > * {
   }
 
   .terminal-display {
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 1rem;
     gap: 0.3rem;
   }
 
@@ -976,28 +977,28 @@ table.table > tbody > tr:hover > * {
 
   /* Numpad - fixed size, doesn't shrink */
   .num-pad {
-    margin-top: 0.5rem;
-    padding: 0.5rem;
+    margin-top: 0.25rem;
+    padding: 0.35rem;
     border-radius: 10px;
     flex-shrink: 0;
   }
 
   .num-pad .d-flex {
-    margin-top: 0.25rem !important;
-    margin-bottom: 0.25rem !important;
+    margin-top: 0.15rem !important;
+    margin-bottom: 0.15rem !important;
   }
 
   .num-pad .btn {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     border-radius: 8px;
     font-size: 1rem;
   }
 
   /* Reset button */
   .reset-container {
-    margin-top: 0.5rem !important;
-    margin-bottom: 0.25rem !important;
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.15rem !important;
     flex-shrink: 0;
   }
 
