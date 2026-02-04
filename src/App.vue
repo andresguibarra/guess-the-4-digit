@@ -1,22 +1,22 @@
 <template>
-  <div class="relative p-4 min-h-screen grid-background md:p-1 md:h-dvh md:flex md:flex-col md:overflow-hidden">
+  <div class="relative p-1 h-dvh flex flex-col overflow-hidden grid-background md:p-4 md:min-h-screen md:h-auto md:block md:overflow-visible">
     <LanguageSelector />
-    <div class="flex justify-center md:flex-1 md:flex md:min-h-0">
-      <div class="w-full max-w-md md:flex md:flex-col md:min-h-0">
-        <div class="game-card-glow bg-[rgba(21,27,35,0.8)] backdrop-blur-xl border border-white/[0.08] rounded-[20px] p-7 shadow-[0_4px_24px_rgba(0,0,0,0.3),inset_0_0_0_1px_rgba(255,255,255,0.03)] mt-6 relative overflow-hidden md:mt-1 md:p-2 md:rounded-xl md:flex-1 md:flex md:flex-col md:min-h-0">
-          <h1 class="text-center my-2 font-[Roboto,sans-serif] font-light text-white text-3xl tracking-wide md:text-xl md:mb-1 md:mt-0">{{ t('title') }}</h1>
+    <div class="flex-1 flex justify-center min-h-0 md:block md:flex-none">
+      <div class="w-full max-w-md flex flex-col min-h-0 md:block">
+        <div class="game-card-glow bg-[rgba(21,27,35,0.8)] backdrop-blur-xl border border-white/[0.08] rounded-xl p-2 shadow-[0_4px_24px_rgba(0,0,0,0.3),inset_0_0_0_1px_rgba(255,255,255,0.03)] mt-1 relative overflow-hidden flex-1 flex flex-col min-h-0 md:rounded-[20px] md:p-7 md:mt-6 md:block md:overflow-visible">
+          <h1 class="text-center mb-1 mt-0 font-[Roboto,sans-serif] font-light text-white text-xl tracking-wide md:text-3xl md:my-2">{{ t('title') }}</h1>
           <p class="text-center hidden sm:block mb-3 font-[Inter,sans-serif] font-normal text-white/60 text-sm">
             {{ t('description') }}
             <br />{{ t('attemptsText') }}
           </p>
           
           <!-- Table -->
-          <div class="mb-6 md:mb-1 md:flex-1 md:min-h-0">
-            <table class="w-full border-separate border-spacing-0">
+          <div class="flex-1 min-h-0 mb-1 md:mb-6 md:flex-none">
+            <table class="w-full h-full border-separate border-spacing-0 md:h-auto">
               <thead>
                 <tr>
-                  <th class="w-1/2 font-[Roboto,sans-serif] font-normal text-xs text-white/50 uppercase tracking-widest pb-3 border-b border-white/[0.08] md:text-[0.65rem] md:py-1 md:px-2">{{ t('guess') }}</th>
-                  <th class="w-1/4 text-center font-[Roboto,sans-serif] font-normal text-xs text-white/50 uppercase tracking-widest pb-3 border-b border-white/[0.08] md:text-[0.65rem] md:py-1 md:px-2">
+                  <th class="w-1/2 font-[Roboto,sans-serif] font-normal text-[0.65rem] text-white/50 uppercase tracking-widest py-1 px-2 border-b border-white/[0.08] md:text-xs md:pb-3 md:pt-0">{{ t('guess') }}</th>
+                  <th class="w-1/4 text-center font-[Roboto,sans-serif] font-normal text-[0.65rem] text-white/50 uppercase tracking-widest py-1 px-2 border-b border-white/[0.08] md:text-xs md:pb-3 md:pt-0">
                     <Popper hover arrow>
                       <span class="flex items-center justify-center">
                         <span class="mr-1">{{ t('goods') }}</span>
@@ -51,7 +51,7 @@
                       </template>
                     </Popper>
                   </th>
-                  <th class="w-1/4 text-center font-[Roboto,sans-serif] font-normal text-xs text-white/50 uppercase tracking-widest pb-3 border-b border-white/[0.08] md:text-[0.65rem] md:py-1 md:px-2">
+                  <th class="w-1/4 text-center font-[Roboto,sans-serif] font-normal text-[0.65rem] text-white/50 uppercase tracking-widest py-1 px-2 border-b border-white/[0.08] md:text-xs md:pb-3 md:pt-0">
                     <Popper hover arrow>
                       <span class="flex items-center justify-center">
                         <span class="mr-1">{{ t('corrects') }}</span>
@@ -88,35 +88,35 @@
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="flex-1">
                 <tr 
                   v-for="(attempt, index) in Array(10)" 
                   :key="index" 
-                  class="h-9 md:h-8 odd:bg-white/[0.03] even:bg-transparent hover:bg-white/[0.06]"
+                  class="h-[calc((100%-2rem)/10)] md:h-9 odd:bg-white/[0.03] even:bg-transparent hover:bg-white/[0.06]"
                 >
-                  <td class="align-middle px-3 md:px-2 text-white/90 font-[Roboto,sans-serif] font-light text-xl tracking-[0.4rem] md:text-base md:tracking-[0.25rem]">
+                  <td class="align-middle px-2 md:px-3 text-white/90 font-[Roboto,sans-serif] font-light text-base tracking-[0.25rem] md:text-xl md:tracking-[0.4rem]">
                     <span v-if="attempts[index]?.guess" class="animate-fade-in">{{
                       attempts[index]?.guess
                     }}</span>
-                    <span v-else class="inline-block h-5 md:h-4 invisible">&nbsp;</span>
+                    <span v-else class="inline-block h-4 md:h-5 invisible">&nbsp;</span>
                   </td>
-                  <td class="align-middle px-3 md:px-2 text-center">
+                  <td class="align-middle px-2 md:px-3 text-center">
                     <span 
                       v-if="attempts[index]?.cows !== undefined" 
-                      :class="['animate-fade-in score-badge-goods md:min-w-[28px] md:h-6 md:px-2 md:text-sm', { 'score-badge-zero': attempts[index]?.cows === 0 }]"
+                      :class="['animate-fade-in score-badge-goods min-w-[28px] h-6 px-2 text-sm md:min-w-[40px] md:h-8 md:px-3 md:text-base', { 'score-badge-zero': attempts[index]?.cows === 0 }]"
                     >{{
                       attempts[index]?.cows
                     }}</span>
-                    <span v-else class="inline-block min-w-[40px] h-8 md:min-w-[28px] md:h-6 invisible">&nbsp;</span>
+                    <span v-else class="inline-block min-w-[28px] h-6 md:min-w-[40px] md:h-8 invisible">&nbsp;</span>
                   </td>
-                  <td class="align-middle px-3 md:px-2 text-center">
+                  <td class="align-middle px-2 md:px-3 text-center">
                     <span 
                       v-if="attempts[index]?.bulls !== undefined" 
-                      :class="['animate-fade-in score-badge-corrects md:min-w-[28px] md:h-6 md:px-2 md:text-sm', { 'score-badge-zero': attempts[index]?.bulls === 0 }]"
+                      :class="['animate-fade-in score-badge-corrects min-w-[28px] h-6 px-2 text-sm md:min-w-[40px] md:h-8 md:px-3 md:text-base', { 'score-badge-zero': attempts[index]?.bulls === 0 }]"
                     >{{
                       attempts[index]?.bulls
                     }}</span>
-                    <span v-else class="inline-block min-w-[40px] h-8 md:min-w-[28px] md:h-6 invisible">&nbsp;</span>
+                    <span v-else class="inline-block min-w-[28px] h-6 md:min-w-[40px] md:h-8 invisible">&nbsp;</span>
                   </td>
                 </tr>
               </tbody>
@@ -124,11 +124,11 @@
           </div>
 
           <!-- Input Form -->
-          <form v-if="!message.show" @submit.prevent="submitGuess" class="flex md:shrink-0 md:mb-1">
+          <form v-if="!message.show" @submit.prevent="submitGuess" class="flex shrink-0 mb-1 md:mb-0">
             <div class="relative w-full">
               <div class="flex items-center w-full bg-transparent border-2 border-[#333] overflow-hidden" @click="focusInput">
-                <div class="flex-1 flex items-center justify-center py-4 px-6 gap-2 bg-transparent cursor-text md:py-1.5 md:px-4 md:gap-1">
-                  <span v-for="i in 4" :key="i" class="font-[Roboto,sans-serif] font-light text-3xl min-w-6 text-center md:text-2xl md:min-w-5">
+                <div class="flex-1 flex items-center justify-center py-1.5 px-4 gap-1 bg-transparent cursor-text md:py-4 md:px-6 md:gap-2">
+                  <span v-for="i in 4" :key="i" class="font-[Roboto,sans-serif] font-light text-2xl min-w-5 text-center md:text-3xl md:min-w-6">
                     <span v-if="guess[i-1]" class="text-white">{{ guess[i-1] }}</span>
                     <span v-else-if="i === guess.length + 1" class="text-white animate-blink">_</span>
                     <span v-else class="text-white/15">_</span>
@@ -146,8 +146,8 @@
                   @input="validateInput"
                   :readonly="isMobile()"
                 />
-                <button :disabled="guess.length < 4" type="submit" class="bg-transparent border-none border-l-2 border-l-[#333] py-4 px-6 cursor-pointer transition-all duration-200 flex items-center justify-center md:py-2 md:px-4 disabled:cursor-not-allowed">
-                  <PaperPlaneIcon class="w-6 h-6 text-white/50 transition-colors duration-200 hover:text-white md:w-5 md:h-5" :class="{ '!text-white/20': guess.length < 4 }" />
+                <button :disabled="guess.length < 4" type="submit" class="bg-transparent border-none border-l-2 border-l-[#333] py-2 px-4 cursor-pointer transition-all duration-200 flex items-center justify-center md:py-4 md:px-6 disabled:cursor-not-allowed">
+                  <PaperPlaneIcon class="w-5 h-5 text-white/50 transition-colors duration-200 hover:text-white md:w-6 md:h-6" :class="{ '!text-white/20': guess.length < 4 }" />
                 </button>
               </div>
               <transition name="tooltip-fade">
